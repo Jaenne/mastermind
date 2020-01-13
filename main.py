@@ -24,7 +24,7 @@ The right colors in the right place are symbolized by: V
 
 # Welcome text :
 print("Welcome in Mastermind.")
-nom = input("What's your nam ? ? ")
+nom = input("What's your name ? ")
 phrase_1 = "X means : right color BAD place.\n"
 phrase_2 = "V means : right color Good place.\n"
 phrase_3 ="The code consists of 4 letters, without duplicates.\n"
