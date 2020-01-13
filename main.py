@@ -10,19 +10,19 @@ In Mastermind you have to find the code.
 It was invented by Mordecai Meirowitz.
 You have 12 tries.
 The number of points depends on the number of tries remaining.
-during a test you offer a 4 color code.
+During a test you offer a 4 color code.
 The code cannot contain the same color more than once.
 The code cannot be made up of blanks.
 The game will answer which colors are in the codes
 and which colors are in the right places.
-colors in the code = (colors in the code - colors in the right place).
-colors will be replaced by letters: A B C D E F H I
+Colors in the code = (colors in the code - colors in the right place).
+Colors will be replaced by letters: A B C D E F H I
 The right colors in the wrong place are symbolized by: X
 The right colors in the right place are symbolized by: V
 
 """
 
-# Message d'accueil.
+# Welcome text :
 print("Welcome in Mastermind.")
 nom = input("What's your nam ? ? ")
 phrase_1 = "X means : right color BAD place.\n"
@@ -31,7 +31,7 @@ phrase_3 ="The code consists of 4 letters, without duplicates.\n"
 phrase_4 = "You have 12 tries.\n"
 print(phrase_1 + phrase_2 + phrase_3 + phrase_4)
 
-# Ouvrir le fichier score.
+# Open the score file.
 tableau_des_scores = ouvrir_le_fichier_sauvegardes()
 score = ouvrir_la_sauvegarde(nom)
 print("Your best score :", score)
