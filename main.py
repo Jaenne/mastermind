@@ -61,10 +61,10 @@ while not quitter:
 	while bonnes_places < 4 and compteur_d_essais < 12:
 		combinaison = verifier_saisie()
 		bonnes_couleurs, compteur_d_essais, combinaison = comparaison_couleurs(
-																combinaison, 
-																code, 
-																compteur_d_essais
-																)
+										combinaison, 
+										code, 
+										compteur_d_essais
+										)
 		bonnes_places = comparaison_places(combinaison, code)
 		bonnes_couleurs = (bonnes_couleurs - bonnes_places)
 
