@@ -2,8 +2,7 @@
 # -*-coding:Utf-8 -*
 
 from package.fonctions_mastermind import *
-import os
-os.chdir(".")
+from package.classe_mastermind import Mastermind
 
 """
 In Mastermind you have to find the code.
@@ -20,84 +19,52 @@ colors in the code = (colors in the code - colors in the right place).
 colors will be replaced by letters: A B C D E F H I
 The right colors in the wrong place are symbolized by: X
 The right colors in the right place are symbolized by: V
-
 """
 
-
 print("Welcome to Mastermind.")
-nom = input("What's your name ? ")
-print(message_accueil())
+name = input("What's your name ? ")
 
 # Ouvrir le fichier score.
-tableau_des_scores = ouvrir_le_fichier_sauvegardes()
-score = ouvrir_la_sauvegarde(nom)
-
-quitter = False
+open_backup_file()
+score = open_backup(name)
+leave = False
 
 # Boucle de jeu.
-while not quitter:
-	compteur_d_essais = 0
-	bonnes_places = 0
-	compteur_d_essais = 0
-	print("Choose your difficulty level.")
-	difficulte = choix_difficulte()
+while not leave:
+	m = Mastermind()
+	mode = mode_choice()
 
-	if difficulte == "hard":
-		code = generer_code()
-		#print("Code :\n", code)
-		print("The code consists of 4 letters. There may be duplicates.")
+	if mode == "duplicates":
+		m.set_genererate_code()
+		print("\nThe code consists of 4 letters. There may be duplicates.")
 	else:
-		code = generer_code_sans_doubles()	
-		#print("Code sans doubles :\n", code)
-		print("The code consists of 4 letters, without duplicates.\n")
+		m.set_genererate_code_whithout_duplicates()	
+		print("\nThe code consists of 4 letters, without duplicates.")
 
-	print(
-		"\n\nX : BAD place(s)", 
-		"				",
-		"V : GOOD place(s)\n", 
-		)
-
+	m.display_help()
+	
 	# Secret code loop.
-	while bonnes_places < 4 and compteur_d_essais < 12:
-		combinaison = verifier_saisie()
-		bonnes_couleurs, compteur_d_essais, combinaison = comparaison_couleurs(
-										combinaison, 
-										code, 
-										compteur_d_essais
-										)
-		bonnes_places = comparaison_places(combinaison, code)
-		bonnes_couleurs = (bonnes_couleurs - bonnes_places)
-
-		# Displays in 1 line the information necessary 
-		# for the resolution of the code.
-		print(
-			"X :", bonnes_couleurs, 
-			"			",
-			combinaison[0], 
-			combinaison[1], 
-			combinaison[2], 
-			combinaison[3], 
-			"			",
-			"V :", bonnes_places, 
-			"		",
-			"try n°", compteur_d_essais
-			)
-	if difficulte == "hard":
-		score = (12 - compteur_d_essais) * 2
-	else:
-		score = (12 - compteur_d_essais)
-
-	if bonnes_places == 4:
+	while m.get_good_places() < 4 and m.get_tries_counter() < 12:
+		m.set_combination()
+		m.set_color_comparison()
+		m.set_places_comparison()
+		m.display_result()
+		
+	score = (12 - m.get_tries_counter())
+	
+	if m.get_good_places() == 4:
 		print(
 			"\n\nCongratulations, you broke the code in",
-			compteur_d_essais, 
+			m.get_tries_counter(), 
 			"tries.\nYour score is :",
 			score
 			)
-		enregistrer_le_score(nom, score)
+		save_score(name, score)
+		
 	else:
+		code = m.get_code()
 		print(
-			"You did not break the code : \n		",
+			"\nYou did not break the code : \n		",
 			code[0], 
 			code[1], 
 			code[2], 
@@ -106,4 +73,7 @@ while not quitter:
 			score
 			)
 
+	compare_score(name, score)
+
+	leave, name = exit(name)
 	quitter, nom = sortir(nom)
