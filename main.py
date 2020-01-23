@@ -24,28 +24,24 @@ The right colors in the right place are symbolized by: V
 print("Welcome to Mastermind.")
 name = input("What's your name ? ")
 
-# Ouvrir le fichier score.
+# Get score.
 open_backup_file()
 score = open_backup(name)
+print ("Hello ", name)		
+print("Your best score :", score)
 leave = False
 
-# Boucle de jeu.
+# Game loop.
 while not leave:
 	m = Mastermind()
-	mode = mode_choice()
-
-	if mode == "duplicates":
-		m.set_genererate_code()
-		print("\nThe code consists of 4 letters. There may be duplicates.")
-	else:
-		m.set_genererate_code_whithout_duplicates()	
-		print("\nThe code consists of 4 letters, without duplicates.")
-
+	m.set_mode_choice()
+	m.set_genererate_code()
 	m.display_help()
 	
 	# Secret code loop.
 	while m.get_good_places() < 4 and m.get_tries_counter() < 12:
-		m.set_combination()
+		entry = input("Enter your combination : ")
+		m.set_combination(entry)
 		m.set_color_comparison()
 		m.set_places_comparison()
 		m.display_result()
@@ -76,4 +72,4 @@ while not leave:
 	compare_score(name, score)
 
 	leave, name = exit(name)
-	quitter, nom = sortir(nom)
+
