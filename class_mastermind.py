@@ -12,103 +12,78 @@ class Mastermind:
 		self.tries_counter = 0
 		self.good_places = 0
 		self.good_colors = 0
+		self.mode_choice = "duplicates"
 
-	def set_combination(self):
-		""" 
-		The player must enter 4 letters.
-		These letters are stored in the authorized list.		
-		If the entry is not suitable, because there are too many characters
-		or that they are not alpha characters, the function
-		start over at the beginning.		
-		The entry is converted capitals.		
-		If the entry is not suitable, because the letters are not
-		not in the authorized list, print each forbidden letter,
-		the function starts again at beginning.		
-		Else : Each letter of the entry is stored in the list
-		combination.
-		"""
-		ok = True
-		entry = input(
-			"Enter your combination : "
-			)
-		if len(entry) != 4 or not entry.isalpha():
-			print(
-				"Your combination must contain 4 characters among allowed letters."
-				)
-			return self.set_combination()
+	def set_mode_choice(self):
+		phrase_1 = "\nChoose your mode :\n"
+		phrase_2 = "Hit D to play with duplicates in code.\n"
+		phrase_3 = "Hit N to play without duplicates in code."
+		phrase_4 = "Sorry I did not understand. Please try again."
+		print(phrase_1 + phrase_2 + phrase_3)
+
+		choice = input("Enter your choice : ")
+		if not choice.isalpha():
+			print(phrase_4)
+			return self.set_mode_choice()
+		choice = choice.capitalize()
+		if choice == "D":
+			self.mode_choice = "duplicates"
+			print("\nThe code consists of 4 letters. There may be duplicates.")
+		elif choice == "N":
+			self.mode_choice = "not_duplicates"
+			print("\nThe code consists of 4 letters, without duplicates.")
 		else :
-			entry = (entry).upper()
-			for index, letter in enumerate(entry):
-				if entry[index] not in self.allowed:
-					print(entry[index], "is not allowed.")
-					ok = False
-				else:
-					self.combination[index] = entry[index]
-			if not ok:
-				return self.set_combination()
-						
-	def set_genererate_code_whithout_duplicates(self):
+			print(phrase_4)
+			return self.set_mode_choice()		
+
+	def set_combination(self, entry):
 		""" 
-		The code is a list of 4 "x".
-		Each x takes a value between 0 and 7.
-		If there is a double, the function starts again from the beginning.
-		When the code contains only numbers,
+		Entry must contains 4 letters.
+		These letters are stored in the authorized list.		
+		If the entry is suitable, the entry is converted capitals.
+		Each letter of the entry is stored in the list
+		combination.
+		If the entry is not suitable, because there are too many characters
+		or because the upper letters are not in the authorized list, the 
+		function starts over at the beginning.
+		"""
+		# Thank you Julien00859
+		while True:			
+			if len(entry) == 4 and all(char in self.allowed for char in entry.upper()):
+				entry = (entry).upper()
+				for index, letter in enumerate(entry):
+					self.combination[index] = entry[index]
+				break
+			print("Your combination must contain 4 characters among allowed letters.")
+				
+						
+	def convert_code(self):
+		"""
 		Each number is converted into a letter among those
 		authorized.
 		Each letter is saved in self.code.
 		"""
-		for index, element in enumerate(self.code):
-			number = str(randrange(8))
-			if number in self.code:
-				return self.set_genererate_code_whithout_duplicates()
-			else :
-				self.code[index] = number
 		for i, contenu in enumerate(self.code):
-			if contenu == "0":
-				self.code[i] = self.allowed[0]
-			elif contenu == "1":
-				self.code[i] = self.allowed[1]
-			elif contenu == "2":
-				self.code[i] = self.allowed[2]
-			elif contenu == "3":
-				self.code[i] = self.allowed[3]
-			elif contenu == "4":
-				self.code[i] = self.allowed[4]
-			elif contenu == "5":
-				self.code[i] = self.allowed[5]
-			elif contenu == "6":
-				self.code[i] = self.allowed[6]
-			else:
-				self.code[i] = self.allowed[7]
-		
+			# Thank you Linek !
+			self.code[i] = self.allowed[int(contenu)]
+			print(self.code)
+								
 	def set_genererate_code(self):
 		""" 
 		The code is a list of 4 "x".
 		Each x takes a value between 0 and 7.
-		Each number is converted into a letter among those
-		authorized.
-		Each letter is saved in self.code.
+		If mode choosed is "not_duplicates":
+			If there is a double, the function starts again from the beginning.
+		Else, the function convert_code is called.
 		"""		
 		for index, element in enumerate(self.code):
-			n = str(randrange(8))
-			self.code[index] = n
-		for i, contenu in enumerate(self.code):
-			if contenu == "0":
-				self.code[i] = self.allowed[0]
-			elif contenu == "1":
-				self.code[i] = self.allowed[1]
-			elif contenu == "2":
-				self.code[i] = self.allowed[2]
-			elif contenu == "3":
-				self.code[i] = self.allowed[3]
-			elif contenu == "4":
-				self.code[i] = self.allowed[4]
-			elif contenu == "5":
-				self.code[i] = self.allowed[5]
-			elif contenu == "6":
-				self.code[i] = self.allowed[6]
-			else:
-				self.code[i] = self.allowed[7]
+			number = str(randrange(8))
+			self.code[index] = number
+			element = number
+			if self.mode_choice == "not_duplicates":
+				if self.code.count(element) > 1:
+					return self.set_genererate_code()
+		self.convert_code()
 
 	def set_color_comparison(self):
 		""" 
@@ -150,19 +125,35 @@ class Mastermind:
 					if element == letter:
 						self.good_places +=1
 
+	def display_help(self):
+		"""
+		Displays help about game.
+		"""		
+		phrase_1 = "X means : good color but BAD place.\n"
+		phrase_2 = "V means : good color and GOOD place.\n"	
+		phrase_3 = "You have 12 tries.\n"
+		string_allowed = " ".join(self.allowed)
+		print(phrase_1 + phrase_2 + phrase_3)
+		print(
+			"\n\nBAD place(s)", 
+			"	",
+			"Allowed letters :",
+			string_allowed,
+			"	",
+			"GOOD place(s)\n", 
+			)
+
 	def display_result(self):
 		self.good_colors = (self.good_colors - self.good_places)
 		"""
 		Displays in 1 line informations necessary 
 		for the resolution of the code.
 		"""
+		string_conbination = " ".join(self.combination)
 		print(
 			"X :", self.good_colors, 
 			"				",
-			self.combination[0], 
-			self.combination[1], 
-			self.combination[2], 
-			self.combination[3], 
+			string_conbination, 
 			"			",
 			"V :", self.good_places, 
 			"		",
@@ -178,23 +169,4 @@ class Mastermind:
 	def get_code(self):
 		return self.code
 
-	def display_help(self):		
-		phrase_1 = "X means : good color but BAD place.\n"
-		phrase_2 = "V means : good color and GOOD place.\n"	
-		phrase_3 = "You have 12 tries.\n"	
-		print(phrase_1 + phrase_2 + phrase_3)
-		print(
-			"\n\nBAD place(s)", 
-			"	",
-			"Allowed letters : ",
-			self.allowed[0],
-			self.allowed[1],
-			self.allowed[2],
-			self.allowed[3],
-			self.allowed[4],
-			self.allowed[5],
-			self.allowed[6],
-			self.allowed[7],
-			"	",
-			"GOOD place(s)\n", 
-			)
+
