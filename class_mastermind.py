@@ -96,7 +96,7 @@ class Mastermind:
 		for i, contenu in enumerate(self.code):
 			# Thank you Linek !			
 			self.code[i] = self.allowed[int(contenu)]
-		print(self.code)
+		#print(self.code)
 								
 	def set_genererate_code(self):
 		""" 
